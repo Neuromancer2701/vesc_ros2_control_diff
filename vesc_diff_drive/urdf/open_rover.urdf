@@ -564,12 +564,11 @@
     <limit effort="100.0" velocity="10.0"/> <!-- Continuous rotation -->
   </joint>
 
-  <ros2_control name="VescHardwareInterface" type="system">
+  <ros2_control name="VescLeftHardwareInterface" type="system">
     <hardware>
       <plugin>vesc_driver/VescHardwareInterface</plugin>
-      <param name="port">/dev/serial/by-path/platform-3f980000.usb-usb-0:1.2:1.0-port0</param>
-      <param name="vesc_id_left">100</param>
-      <param name="vesc_id_right">200</param>
+      <param name="port">/dev/ttyACM0</param>
+      <param name="vesc_id">100</param>
     </hardware>
     <joint name="back_left_wheel_joint">
       <command_interface name="velocity">
@@ -578,6 +577,14 @@
       </command_interface>
       <state_interface name="velocity"/>
     </joint>
+  </ros2_control>
+
+  <ros2_control name="VescRightHardwareInterface" type="system">
+    <hardware>
+      <plugin>vesc_driver/VescHardwareInterface</plugin>
+      <param name="port">/dev/ttyACM1</param>
+      <param name="vesc_id">200</param>
+    </hardware>
     <joint name="back_right_wheel_joint">
       <command_interface name="velocity">
         <param name="min">-100</param>

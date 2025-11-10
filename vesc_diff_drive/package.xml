@@ -3,16 +3,18 @@
 <package format="3">
   <name>vesc_diff_drive</name>
   <version>0.0.0</version>
-  <description>ros2_control setup for a VESC-based differential drive robot.</description>
+  <description>A ROS2 control setup for a VESC-based differential drive robot with two serial ports.</description>
   <maintainer email="user@todo.todo">user</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
-  <depend>ros2_control_boilerplate</depend>
   <depend>vesc_driver</depend>
+  <depend>ros2_control</depend>
+  <depend>controller_manager</depend>
   <depend>diff_drive_controller</depend>
+  <depend>joint_state_broadcaster</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

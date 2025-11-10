@@ -18,6 +18,11 @@ def generate_launch_description():
     with open(urdf_path, 'r') as infp:
         robot_desc = infp.read()
 
+    controllers_path = os.path.join(
+        get_package_share_directory('vesc_diff_drive'),
+        'config',
+        'controllers.yaml')
+
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
@@ -35,8 +40,7 @@ def generate_launch_description():
         Node(
             package='controller_manager',
             executable='ros2_control_node',
-            parameters=[{'robot_description': robot_desc},
-                        os.path.join(get_package_share_directory('vesc_diff_drive'), 'config', 'diff_drive_controller.yaml')],
+            parameters=[{'robot_description': robot_desc}, controllers_path],
             output='screen'),
 
         Node(
