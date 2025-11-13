@@ -1,0 +1,597 @@
+<?xml version="1.0"?>
+<robot name="open_rover">
+
+  <!--
+    Constants for easier editing
+    - tube_size: 38.5mm (0.0385m)
+    - half_tube: 19.25mm (0.01925m)
+    - side_length: 760mm (0.760m)
+    - half_side_length: 380mm (0.380m)
+    - cross_length_inner: 760mm (0.760m)
+    - frame_inner_x_gap: 760 - 38.5 = 721.5mm (0.7215m)
+    - frame_inner_x_edge: 721.5 / 2 = 360.75mm (0.36075m)
+    - side_rail_center_y: (760/2) + (38.5/2) = 380 + 19.25 = 399.25mm (0.39925m)
+    - cross_member_center_x: 380 - 19.25 = 360.75mm (0.36075m)
+    - leg_length: 500mm (0.500m)
+    - half_leg: 250mm (0.250m)
+    - sheet_thickness: 2mm (0.002m)
+    - sheet_depth: 100mm (0.100m)
+  -->
+
+  <!-- Define materials -->
+  <material name="steel_gray">
+    <color rgba="0.6 0.6 0.6 1.0"/>
+  </material>
+
+  <material name="rocker_blue">
+    <color rgba="0.2 0.4 0.8 1.0"/>
+  </material>
+
+  <material name="sheet_metal_gray">
+    <color rgba="0.8 0.8 0.8 1.0"/>
+  </material>
+
+  <material name="wheel_black">
+    <color rgba="0.1 0.1 0.1 1.0"/>
+  </material>
+
+  <!--
+    BASE LINK
+    This is the root link of the robot.
+    We place it at the geometric center of the main horizontal frame
+    (center of length, center of width, and vertical center of the tubes).
+    X is forward, Y is left, Z is up.
+  -->
+  <link name="base_link"/>
+
+  <!--
+    MAIN FRAME LINK
+    This link represents the entire 6-piece welded frame + sheet metal box.
+    It is attached to the base_link by a fixed joint.
+  -->
+  <link name="main_frame">
+    <!--
+      INERTIAL PROPERTIES (Placeholder)
+      Mass is increased to 15kg to account for the sheet metal.
+      This is still a placeholder.
+    -->
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="15.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+
+    <!--
+      VISUAL & COLLISION GEOMETRY (6-PIECE FRAME)
+    -->
+
+    <!-- Piece 1: Left Side Rail -->
+     <visual>
+       <origin xyz="0 0.39925 0" rpy="0 0 0"/>
+       <geometry>
+         <box size="0.760 0.0385 0.0385"/>
+       </geometry>
+       <material name="steel_gray"/>
+     </visual>
+     <collision>
+       <origin xyz="0 0.39925 0" rpy="0 0 0"/>
+       <geometry>
+         <box size="0.760 0.0385 0.0385"/>
+       </geometry>
+     </collision>
+
+     <!-- Piece 2: Right Side Rail -->
+     <visual>
+       <origin xyz="0 -0.39925 0" rpy="0 0 0"/>
+       <geometry>
+         <box size="0.760 0.0385 0.0385"/>
+       </geometry>
+       <material name="steel_gray"/>
+     </visual>
+     <collision>
+       <origin xyz="0 -0.39925 0" rpy="0 0 0"/>
+       <geometry>
+         <box size="0.760 0.0385 0.0385"/>
+       </geometry>
+     </collision>
+
+     <!-- Piece 3: Front Cross-Member -->
+     <visual>
+       <!-- Centered at X=(0.760/2) - (0.0385/2) = 0.380 - 0.01925 = 0.36075 -->
+       <origin xyz="0.36075 0 0" rpy="0 0 0"/>
+       <geometry>
+         <box size="0.0385 0.760 0.0385"/>
+       </geometry>
+       <material name="steel_gray"/>
+     </visual>
+     <collision>
+       <origin xyz="0.36075 0 0" rpy="0 0 0"/>
+       <geometry>
+         <box size="0.0385 0.760 0.0385"/>
+       </geometry>
+     </collision>
+
+    <!-- Piece 4: Back Cross-Member -->
+    <visual>
+      <!-- Centered at X=-(0.760/2) + (0.0385/2) = -0.380 + 0.01925 = -0.36075 -->
+      <origin xyz="-0.36075 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.760 0.0385"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.36075 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.760 0.0385"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 5: Left Back Leg -->
+    <visual>
+      <!-- Aligned with back_cross (X) and side_left (Y) -->
+      <!-- Vertically centered at Z = -(0.500/2) = -0.250 (assuming top flush with frame center) -->
+      <!-- Frame center is Z=0, top is Z=0.01925. Flush top means leg center is Z = 0.01925 - 0.250 = -0.23075 -->
+      <origin xyz="-0.36075 0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.36075 0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 6: Right Back Leg -->
+    <visual>
+      <!-- Aligned with back_cross (X) and side_right (Y) -->
+      <origin xyz="-0.36075 -0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.36075 -0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+    </collision>
+
+    <!--
+      VISUAL & COLLISION GEOMETRY (SHEET METAL BOX)
+      Welded to the *inside* of the frame.
+      Frame bottom is at Z = -0.01925. Box extends 0.100m down from there.
+      Inner X dim: 0.7215m (from -0.3415 to 0.3415)
+      Inner Y dim: 0.760m (from -0.380 to 0.380)
+    -->
+
+    <!-- Piece 7: Box Bottom -->
+    <visual>
+      <!-- Center Z = -0.01925 (frame bottom) - 0.100 (depth) + 0.001 (half thickness) = -0.11825 -->
+      <origin xyz="0 0 -0.11825" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7215 0.760 0.002"/>
+      </geometry>
+      <material name="sheet_metal_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.11825" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7215 0.760 0.002"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 8: Box Front Wall -->
+    <visual>
+      <!-- Center Z = -0.01925 (frame bottom) - 0.050 (half depth) = -0.06925 -->
+      <!-- Center X = 0.36075 (tube center) - 0.01925 (half tube) - 0.001 (half sheet) = 0.3405 -->
+      <origin xyz="0.3405 0 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.760 0.100"/>
+      </geometry>
+      <material name="sheet_metal_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0.3405 0 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.760 0.100"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 9: Box Back Wall -->
+    <visual>
+      <!-- Center X = -0.36075 (tube center) + 0.01925 (half tube) + 0.001 (half sheet) = -0.3405 -->
+      <origin xyz="-0.3405 0 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.760 0.100"/>
+      </geometry>
+      <material name="sheet_metal_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.3405 0 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.760 0.100"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 10: Box Left Wall -->
+    <visual>
+      <!-- Center Y = 0.380 (inner edge) - 0.001 (half sheet) = 0.379 -->
+      <!-- Length = 0.7215 (inner gap) - 0.002 (front wall) - 0.002 (back wall) = 0.7175 -->
+      <origin xyz="0 0.379 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7175 0.002 0.100"/>
+      </geometry>
+      <material name="sheet_metal_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0.379 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7175 0.002 0.100"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 11: Box Right Wall -->
+    <visual>
+      <!-- Center Y = -0.380 (inner edge) + 0.001 (half sheet) = -0.379 -->
+      <origin xyz="0 -0.379 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7175 0.002 0.100"/>
+      </geometry>
+      <material name="sheet_metal_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.379 -0.06925" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.7175 0.002 0.100"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <!--
+    MAIN FRAME JOINT
+    This connects the 'main_frame' link to the 'base_link' with a
+    fixed joint, meaning they move together as one.
+  -->
+  <joint name="main_frame_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="main_frame"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+
+  <!--
+    ================================================
+    NEW: FRONT ROCKER ASSEMBLY
+    ================================================
+  -->
+
+  <!--
+    FRONT ROCKER LINK
+    This is the 3-piece welded assembly (pivot bar + 2 legs).
+    Its origin is at the pivot bolt.
+  -->
+  <link name="front_rocker_link">
+    <inertial>
+      <!-- Placeholder inertia for the rocker assembly -->
+      <!-- Shifted forward by 0.0385m to be in front of the frame -->
+      <origin xyz="0.0385 0 -0.15" rpy="0 0 0"/> <!-- Guessing CoM is down the legs a bit -->
+      <mass value="5.0"/>
+      <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1"/>
+    </inertial>
+
+    <!-- Piece 1: Horizontal Pivot Bar -->
+    <!-- Placed in front of the main frame's cross-member -->
+    <!-- Joint is at X_base=0.36075 (center of cross-member) -->
+    <!-- Cross-member front face is at X_base=0.380 -->
+    <!-- Rocker back face is at X_base=0.380 -->
+    <!-- Rocker center is at X_base=0.380 + 0.01925 = 0.39925 -->
+    <!-- Origin of link is at joint, so rocker visual center is at X_link = 0.39925 - 0.36075 = 0.0385 -->
+    <visual>
+      <origin xyz="0.0385 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.760 0.0385"/>
+      </geometry>
+      <material name="rocker_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0385 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.760 0.0385"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 2: Left Rocker Leg -->
+    <visual>
+      <!-- Bar top is at Z=0.01925. Leg top is flush. Leg center is Z = 0.01925 - 0.250 = -0.23075 -->
+      <!-- Bar end (inner) is Y=0.380. Leg center is Y = 0.380 - 0.01925 = 0.36075 -->
+      <!-- Shifted forward by 0.0385m to match pivot bar -->
+      <origin xyz="0.0385 0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+      <material name="rocker_blue"/>
+    </visual>
+    <collision>
+      <!-- Shifted forward by 0.0385m to match pivot bar -->
+      <origin xyz="0.0385 0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+    </collision>
+
+    <!-- Piece 3: Right Rocker Leg -->
+    <visual>
+      <!-- Leg center is Y = -0.380 + 0.01925 = -0.36075 -->
+      <!-- Shifted forward by 0.0385m to match pivot bar -->
+      <origin xyz="0.0385 -0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+      <material name="rocker_blue"/>
+    </visual>
+    <collision>
+      <!-- Shifted forward by 0.0385m to match pivot bar -->
+      <origin xyz="0.0385 -0.39925 -0.23075" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.0385 0.0385 0.500"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!--
+    FRONT ROCKER JOINT
+    This connects the 'front_rocker_link' to the 'base_link' with a
+    revolute joint (pivoting on the X-axis).
+    It is located at the center of the main frame's front cross-member.
+  -->
+  <joint name="front_rocker_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="front_rocker_link"/>
+    <!-- Origin is at the center of the front cross-member tube -->
+    <!-- USER-CORRECTED POSITION -->
+    <origin xyz="0.36075 0 0" rpy="0 0 0"/>
+    <!-- Axis of rotation is the robot's X-axis -->
+    <axis xyz="1 0 0"/>
+    <!-- Add limits to the rocker motion (+/- 30 degrees) -->
+    <limit lower="-0.5236" upper="0.5236" effort="100.0" velocity="1.0"/>
+  </joint>
+
+
+  <!--
+    ================================================
+    NEW: WHEELS
+    ================================================
+  -->
+
+  <!--
+    BACK LEFT WHEEL
+  -->
+  <link name="back_left_wheel_link">
+    <inertial>
+      <!-- Origin at wheel's CoM -->
+      <origin xyz="0 0.07925 0" rpy="1.5708 0 0"/>
+      <mass value="2.0"/>
+      <!-- Cylinder rotating around Y: Ixx=Izz=0.01327, Iyy=0.0225 -->
+      <inertia ixx="0.01327" ixy="0.0" ixz="0.0" iyy="0.0225" iyz="0.0" izz="0.01327"/>
+    </inertial>
+    <visual>
+      <!-- Wheel Visual (Tire) -->
+      <!-- Offset from joint: leg_half_width(0.01925) + gap(0.005) + wheel_half_width(0.055) = 0.07925 -->
+      <origin xyz="0 0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <visual>
+      <!-- Spindle Visual -->
+      <!-- Spindle (50mm) starts at wheel inner face and goes inward -->
+      <!-- Wheel inner face at Y = 0.07925 - 0.055 = 0.02425 -->
+      <!-- Spindle center at Y = 0.02425 - 0.025 = -0.00075 -->
+      <origin xyz="0 -0.00075 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.05"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <!-- Collision geometry is just the wheel -->
+      <origin xyz="0 0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="back_left_wheel_joint" type="revolute">
+    <parent link="main_frame"/>
+    <child link="back_left_wheel_link"/>
+    <!-- Origin: At center of leg, 28mm from bottom -->
+    <!-- Leg bottom Z = -0.48075. Joint Z = -0.48075 + 0.028 = -0.45275 -->
+    <origin xyz="-0.36075 0.39925 -0.45275" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="10.0"/> <!-- Continuous rotation -->
+  </joint>
+
+  <!--
+    BACK RIGHT WHEEL
+  -->
+  <link name="back_right_wheel_link">
+    <inertial>
+      <!-- Origin at wheel's CoM -->
+      <origin xyz="0 -0.07925 0" rpy="1.5708 0 0"/>
+      <mass value="2.0"/>
+      <!-- Cylinder rotating around Y: Ixx=Izz=0.01327, Iyy=0.0225 -->
+      <inertia ixx="0.01327" ixy="0.0" ixz="0.0" iyy="0.0225" iyz="0.0" izz="0.01327"/>
+    </inertial>
+    <visual>
+      <!-- Wheel Visual (Tire) -->
+      <!-- Offset: -0.07925 -->
+      <origin xyz="0 -0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <visual>
+      <!-- Spindle Visual -->
+      <!-- Wheel inner face at Y = -0.07925 + 0.055 = -0.02425 -->
+      <!-- Spindle center at Y = -0.02425 + 0.025 = 0.00075 -->
+      <origin xyz="0 0.00075 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.05"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <!-- Collision geometry is just the wheel -->
+      <origin xyz="0 -0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="back_right_wheel_joint" type="revolute">
+    <parent link="main_frame"/>
+    <child link="back_right_wheel_link"/>
+    <!-- Origin: At center of leg, 28mm from bottom -->
+    <origin xyz="-0.36075 -0.39925 -0.45275" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="10.0"/> <!-- Continuous rotation -->
+  </joint>
+
+  <!--
+    FRONT LEFT WHEEL
+  -->
+  <link name="front_left_wheel_link">
+    <inertial>
+      <!-- Origin at wheel's CoM -->
+      <origin xyz="0 0.07925 0" rpy="1.5708 0 0"/>
+      <mass value="2.0"/>
+      <!-- Cylinder rotating around Y: Ixx=Izz=0.01327, Iyy=0.0225 -->
+      <inertia ixx="0.01327" ixy="0.0" ixz="0.0" iyy="0.0225" iyz="0.0" izz="0.01327"/>
+    </inertial>
+    <visual>
+      <!-- Wheel Visual (Tire) -->
+      <!-- Offset: 0.07925 -->
+      <origin xyz="0 0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <visual>
+      <!-- Spindle Visual -->
+      <!-- Spindle center at Y = -0.00075 -->
+      <origin xyz="0 -0.00075 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.05"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <!-- Collision geometry is just the wheel -->
+      <origin xyz="0 0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="front_left_wheel_joint" type="revolute">
+    <parent link="front_rocker_link"/>
+    <child link="front_left_wheel_link"/>
+    <!-- Origin: At center of leg, 28mm from bottom -->
+    <!-- Leg X center (from user file): 0.39925. Leg Y center (from user file): 0.39925 -->
+    <!-- Leg bottom Z = -0.48075. Joint Z = -0.45275 -->
+    <origin xyz="0.0385 0.39925 -0.45275" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="10.0"/> <!-- Continuous rotation -->
+  </joint>
+
+  <!--
+    FRONT RIGHT WHEEL
+  -->
+  <link name="front_right_wheel_link">
+    <inertial>
+      <!-- Origin at wheel's CoM -->
+      <origin xyz="0 -0.07925 0" rpy="1.5708 0 0"/>
+      <mass value="2.0"/>
+      <!-- Cylinder rotating around Y: Ixx=Izz=0.01327, Iyy=0.0225 -->
+      <inertia ixx="0.01327" ixy="0.0" ixz="0.0" iyy="0.0225" iyz="0.0" izz="0.01327"/>
+    </inertial>
+    <visual>
+      <!-- Wheel Visual (Tire) -->
+      <!-- Offset: -0.07925 -->
+      <origin xyz="0 -0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+      <material name="wheel_black"/>
+    </visual>
+    <visual>
+      <!-- Spindle Visual -->
+      <!-- Spindle center at Y = 0.00075 -->
+      <origin xyz="0 0.00075 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.008" length="0.05"/>
+      </geometry>
+      <material name="steel_gray"/>
+    </visual>
+    <collision>
+      <!-- Collision geometry is just the wheel -->
+      <origin xyz="0 -0.07925 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.15" length="0.11"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="front_right_wheel_joint" type="revolute">
+    <parent link="front_rocker_link"/>
+    <child link="front_right_wheel_link"/>
+    <!-- Origin: At center of leg, 28mm from bottom -->
+    <!-- Leg X center (from user file): 0.39925. Leg Y center (from user file): -0.39925 -->
+    <origin xyz="0.0385 -0.39925 -0.45275" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="100.0" velocity="10.0"/> <!-- Continuous rotation -->
+  </joint>
+
+  <ros2_control name="VescLeftHardwareInterface" type="system">
+    <hardware>
+      <plugin>vesc_driver/VescHardwareInterface</plugin>
+      <param name="port">/dev/ttyACM0</param>
+      <param name="vesc_id">100</param>
+    </hardware>
+    <joint name="back_left_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-100</param>
+        <param name="max">100</param>
+      </command_interface>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <ros2_control name="VescRightHardwareInterface" type="system">
+    <hardware>
+      <plugin>vesc_driver/VescHardwareInterface</plugin>
+      <param name="port">/dev/ttyACM1</param>
+      <param name="vesc_id">200</param>
+    </hardware>
+    <joint name="back_right_wheel_joint">
+      <command_interface name="velocity">
+        <param name="min">-100</param>
+        <param name="max">100</param>
+      </command_interface>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+</robot>
