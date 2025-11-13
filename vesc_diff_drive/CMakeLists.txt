@@ -7,6 +7,8 @@ endif()
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_lint_auto REQUIRED)
+find_package(ament_lint_common REQUIRED)
 find_package(vesc_driver REQUIRED)
 find_package(ros2_control REQUIRED)
 find_package(controller_manager REQUIRED)
@@ -30,6 +32,7 @@ install(
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
+  find_package(ament_lint_common REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto()
